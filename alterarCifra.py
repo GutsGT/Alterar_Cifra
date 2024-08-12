@@ -1,7 +1,7 @@
 import re
 
 print("\n\n\n")
-# nomeArquivo = input("nomeArquivo: ")
+# nomeArquivo = "teste"
 nomeArquivo = input("Insira o nome do arquivo (sem a extensão): ")
 arquivo = open("./cifras/"+nomeArquivo+".txt", "r", encoding="utf-8")
 linhas = arquivo.readlines()
@@ -123,11 +123,9 @@ for linha in linhas:
 		linha = linha[0: len(linha)-1]
 
 	if(linhaCifra):
-		# print(linha)
-		
 		novaLinha = ""
 		
-		notas = re.split("\s", linha)
+		notas = re.split(r"\s", linha)
 		for nota in notas:
 			if nota == "":
 				continue
@@ -143,13 +141,35 @@ for linha in linhas:
 				else:
 					novaNota = escala["maiores"][idNovaNota][0]
 				
+				# if(len(novaNota) > len(nota[0])):
+					# print("------------")
+					# print(novaLinha)
+					# print(linha)
+					# print("------------")
+					
+					# if(len(linha) > 0 and len(novaLinha) > 0):
+						
+					# 	if(len(linha) > 0 and re.search(" ", linha) != None and re.search("[A-G]", linha) != None and re.search("[A-G]", linha).span(0)[0] < re.search(" ", linha).span(0)[0]):
+					# 		linha = linha[0:f2+len(novaNota)]+"|"+linha[f2+len(novaNota):]
+
+						# for f2 in range(0, len(linha)):
+						# 	if(linha[f2] == " "):
+						# 		break
+						# 	if(linha[f2].isupper()):
+						# 		print("Aqui")
+						# 		linha = linha[0:f2+len(novaNota)]+"|"+linha[f2+len(novaNota):]
+						# 		if(f == 0):
+						# 			linha = " "+linha
+						# 		else:
+						# 			linha = linha[0:f2-1]+" "+linha[f:]
+								
+						# 		break
 				
+				# Faz a substituição da nota
 				linha = linha.replace(nota[f], novaNota, 1)
 				novaLinha += linha[0:linha.find(novaNota)+len(novaNota)]
 				linha = linha[linha.find(novaNota)+len(novaNota):]
-				if(linha[0] != " "):
-					if(linha[0] in ["#", "m"]):
-						print("Inserir espaco")
+
 
 
 				if(len(novaNota) != len(nota[f])):
