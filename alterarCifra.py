@@ -1,192 +1,191 @@
 import re
 
-print("\n\n\n")
-# nomeArquivo = "teste"
-nomeArquivo = input("Insira o nome do arquivo (sem a extensão): ")
-arquivo = open("./cifras/"+nomeArquivo+".txt", "r", encoding="utf-8")
-linhas = arquivo.readlines()
-linhaCifra = True
-prevEmpty = False
+while(True):
+	print("\n\n\n")
+	nomeArquivo = input("Insira o nome do arquivo (sem a extensão): ")
+	arquivo = open("./cifras/"+nomeArquivo+".txt", "r", encoding="utf-8")
+	linhas = arquivo.readlines()
+	novasLinhas = ""
+	linhaCifra = True
 
-sizeHeader = 2
+	sizeHeader = 1
+	tomAtual = ""
+	idTomAtual = -1
+	proxTom = ""
+	idProxTom = -1
+	diffTons = -1
+	tipoEscala = ""
+	escala = {
+		"maiores": [
+			["C"],
+			["C#", "Db"],
+			["D"], 
+			["D#", "Eb"],
+			["E"], 
+			["F"], 
+			["F#", "Gb"],
+			["G"], 
+			["G#", "Ab"],
+			["A"], 
+			["A#", "Bb"],
+			["B"]
+		],
+		"menores": [
+			["Cm"], 
+			["C#m", "Dbm"],
+			["Dm"], 
+			["D#m", "Ebm"],
+			["Em"], 
+			["Fm"], 
+			["F#m", "Gbm"],
+			["Gm"], 
+			["G#m", "Abm"],
+			["Am"], 
+			["A#m", "Bbm"],
+			["Bm"]
+		]
+	}
 
-tomAtual = ""
-idTomAtual = -1
+	def encontrarIdNota(tom):
+		idTom = -1
 
-proxTom = ""
-idProxTom = -1
-
-diffTons = -1
-tipoEscala = ""
-
-escala = {
-	"maiores": [
-		["C"],
-		["C#", "Db"],
-		["D"], 
-		["D#", "Eb"],
-		["E"], 
-		["F"], 
-		["F#", "Gb"],
-		["G"], 
-		["G#", "Ab"],
-		["A"], 
-		["A#", "Bb"],
-		["B"]
-	],
-	"menores": [
-		["Cm"], 
-		["C#m", "Dbm"],
-		["Dm"], 
-		["D#m", "Ebm"],
-		["Em"], 
-		["Fm"], 
-		["F#m", "Gbm"],
-		["Gm"], 
-		["G#m", "Abm"],
-		["Am"], 
-		["A#m", "Bbm"],
-		["Bm"]
-	]
-}
-
-def encontrarIdNota(tom):
-	idTom = -1
-
-	if(tom.find("M") == -1):
-		# Tom maior
-		tipoEscala = "maiores"
-	else:
-		# Tom menor
-		tipoEscala = "menores"
-		tom = tom.replace("M", "m")
-	
-	for f in range(0, len(escala[tipoEscala])):
-		for f2 in range(0, len(escala[tipoEscala][f])):
-			if(tom == escala[tipoEscala][f][f2]):
-				idTom = f
+		if(tom.find("M") == -1):
+			# Tom maior
+			tipoEscala = "maiores"
+		else:
+			# Tom menor
+			tipoEscala = "menores"
+			tom = tom.replace("M", "m")
+		
+		for f in range(0, len(escala[tipoEscala])):
+			for f2 in range(0, len(escala[tipoEscala][f])):
+				if(tom == escala[tipoEscala][f][f2]):
+					idTom = f
+					break
+			
+			if(idTom >= 0):
 				break
 		
-		if(idTom >= 0):
-			break
-	
-	if(idTom == -1):
-		print("Tom não encontrado.")
-	
-	return idTom
+		if(idTom == -1):
+			print("Tom não encontrado.")
+		
+		return idTom
 
 
-for f in range(sizeHeader):
-	while((linhas[f][-1:] == " " or linhas[f][-1:] == "\n") and len(linhas[f]) > 0):
-		linhas[f] = linhas[f][0:-1]
+	# Encontrar o tom atual da cifra:
+	for f in range(sizeHeader):
+		while((linhas[f][-1:] == " " or linhas[f][-1:] == "\n") and len(linhas[f]) > 0):
+			linhas[f] = linhas[f][0:-1]
 
-	if(linhas[f].find("Tom:") != -1):
-		tomAtual = linhas[f][linhas[f].find("Tom:")+4:len(linhas[f])]
-		tomAtual = tomAtual.replace(" ", "")
+		if(linhas[f].find("Tom:") != -1):
+			tomAtual = linhas[f][linhas[f].find("Tom:")+4:len(linhas[f])]
+			tomAtual = tomAtual.replace(" ", "")
 
-		idTomAtual = encontrarIdNota(tomAtual)
-		if(idTomAtual == -1):
-			quit()
-
-while(idProxTom == -1):
-	print("O tom atual é: "+tomAtual)
-	proxTom = input("Para qual tom deseja converter? ")
-	proxTom = proxTom.upper()
-
-	idProxTom = encontrarIdNota(proxTom)
-
-	diffTons = idProxTom-idTomAtual
-
-print("\n\n\n")
+			idTomAtual = encontrarIdNota(tomAtual)
+			if(idTomAtual == -1):
+				quit()
 
 
-print("Tom: "+proxTom+"\n")
-underlines = []
-for linha in linhas:
-	# Pular as primeiras linhas, que representam o tom da música
-	if(sizeHeader > 0):
-		sizeHeader -= 1
-		continue
-	
-	# Reconhecer se a linha atual é de cifra ou letra
-	if(linha == ""):
-		if(prevEmpty):
-			linhaCifra = True
-			prevEmpty = False
+	# Perguntar o próximo tom da cifra para o usuário
+	while(idProxTom == -1):
+		print("O tom atual é: "+tomAtual)
+		proxTom = input("Para qual tom deseja converter? ")
+		proxTom = proxTom.upper()
+
+		idProxTom = encontrarIdNota(proxTom)
+
+		diffTons = idProxTom-idTomAtual
+
+
+	print("\n\n\n")
+	novasLinhas += "Tom: "+proxTom+"\n";
+	for f in range(0, len(linhas)):
+		# Pular a(s) primeira(s) linha(s), que representa(m) o tom da música
+		if(sizeHeader > 0):
+			sizeHeader -= 1
 			continue
-		prevEmpty = True
-	else:
-		prevEmpty = False
-
-	# Retirar a quebra de linha do final
-	if(linha[-1:] == "\n"):
-		linha = linha[0: len(linha)-1]
-
-	if(linhaCifra):
+		
+		# Reconhecer se a linha atual é de cifra ou letra
+		pattern = "([A-G]+([^( ,a-zá-ù)]|[#mb]+( *(^[a-z]|[A-Z]|[2-9]|\n)))|( [A-G] )|([A-G]\s*\n))";
+		linhaCifra = (re.search(pattern, linhas[f]) != None)
+		
+		
+		# Retirar a quebra de linha do final
+		if(linhas[f][-1:] == "\n"):
+			linhas[f] = linhas[f][0: len(linhas[f])-1]
+		
+		
 		novaLinha = ""
-		
-		notas = re.split(r"\s", linha)
-		for nota in notas:
-			if nota == "":
-				continue
-			nota = re.findall("[A-G]#?b?", nota)
+		if(linhaCifra):	
+			notas = re.split(r"\s", linhas[f])
+			for nota in notas:
+				if nota == "":
+					continue
+				nota = re.findall("[A-G]#?b?", nota)
 
-			for f in range(0, len(nota)):
-				idNota = encontrarIdNota(nota[f])
-				idNovaNota = idNota+diffTons
-				if(idNovaNota > 11):
-					idNovaNota -= 12
-				if(nota[f].find("b") != -1):
-					novaNota = escala["maiores"][idNovaNota][1]
-				else:
-					novaNota = escala["maiores"][idNovaNota][0]
-				
-				# if(len(novaNota) > len(nota[0])):
-					# print("------------")
-					# print(novaLinha)
-					# print(linha)
-					# print("------------")
+				for f2 in range(0, len(nota)):
+					idNota = encontrarIdNota(nota[f2])
+					idNovaNota = idNota+diffTons
+					if(idNovaNota > 11):
+						idNovaNota -= 12
+					if(nota[f2].find("b") != -1 and len(escala["maiores"][idNovaNota]) > 1):
+						novaNota = escala["maiores"][idNovaNota][1]
+					else:
+						novaNota = escala["maiores"][idNovaNota][0]
 					
-					# if(len(linha) > 0 and len(novaLinha) > 0):
-						
-					# 	if(len(linha) > 0 and re.search(" ", linha) != None and re.search("[A-G]", linha) != None and re.search("[A-G]", linha).span(0)[0] < re.search(" ", linha).span(0)[0]):
-					# 		linha = linha[0:f2+len(novaNota)]+"|"+linha[f2+len(novaNota):]
-
-						# for f2 in range(0, len(linha)):
-						# 	if(linha[f2] == " "):
-						# 		break
-						# 	if(linha[f2].isupper()):
-						# 		print("Aqui")
-						# 		linha = linha[0:f2+len(novaNota)]+"|"+linha[f2+len(novaNota):]
-						# 		if(f == 0):
-						# 			linha = " "+linha
-						# 		else:
-						# 			linha = linha[0:f2-1]+" "+linha[f:]
-								
-						# 		break
-				
-				# Faz a substituição da nota
-				linha = linha.replace(nota[f], novaNota, 1)
-				novaLinha += linha[0:linha.find(novaNota)+len(novaNota)]
-				linha = linha[linha.find(novaNota)+len(novaNota):]
-
-
-
-				if(len(novaNota) != len(nota[f])):
-					posEspaco = linha.find(" ")
+					# Faz a substituição da nota
+					linhas[f] = linhas[f].replace(nota[f2], novaNota, 1)
+					novaLinha += linhas[f][0:linhas[f].find(novaNota)+len(novaNota)]
+					linhas[f] = linhas[f][linhas[f].find(novaNota)+len(novaNota):]
+					
+					
+					posEspaco = linhas[f].find(" ")
 					if(posEspaco != -1):
-						if(len(novaNota) > len(nota[f])):
-							linha = linha.replace(" ", "", 1)
+						if(len(novaNota) > len(nota[f2])):
+							linhas[f] = linhas[f].replace(" ", "", 1)
+						elif(len(novaNota) < len(nota[f2])):
+							linhas[f] = linhas[f][:posEspaco]+" "+linhas[f][posEspaco:]
+
+					
+					posDivisao = (len(novaLinha)-len(novaNota))
+					if((novaLinha[0:posDivisao][-1:] not in [" ", "/"]) and posDivisao > 0):
+						if(len(linhas[f+1][posDivisao-1:]) > 0 and linhas[f+1][posDivisao-1:][0] != " "):
+							linhas[f+1] = linhas[f+1][0:posDivisao]+"_"+linhas[f+1][posDivisao:]
 						else:
-							linha = linha[0:posEspaco]+" "+linha[posEspaco:]
-							
+							linhas[f+1] = linhas[f+1][0:posDivisao]+" "+linhas[f+1][posDivisao:]	
+						novaLinha = novaLinha[0:posDivisao]+" "+novaLinha[posDivisao:]
+								
 
-		
-		novaLinha += linha
-		linha = ""
-		print(novaLinha)
-	else:
-		print(linha)
-	linhaCifra = not linhaCifra
+			
+			novaLinha += linhas[f]
+			linhas[f] = ""
+		else:
+			novaLinha = linhas[f]
 
-print("\n\n\n\n\n\n")
+		novasLinhas += novaLinha+"\n"
+
+	print(novasLinhas)
+	print("\n\n\n")
+
+	salvar = ""
+	while(salvar not in ["s", "n"]):
+		salvar = input("Deseja salvar essa versão?(s/n)\n")
+		if(salvar not in ["s", "n"]):
+			print("Opção inválida")
+	
+	if(salvar == "s"):
+		novoArquivo = open("./cifras/"+nomeArquivo+"_"+proxTom+".txt", "w", encoding="utf-8")
+		novoArquivo.write(novasLinhas)
+		novoArquivo.close()
+	
+	alterarProxima = ""
+	while(alterarProxima not in ["s", "n"]):
+		alterarProxima = input("Deseja converter outra cifra?(s/n)\n")
+		if(alterarProxima not in ["s", "n"]):
+			print("Opção inválida")
+	if(alterarProxima == "n"):
+		break;
+
+	print("\n\n\n\n\n\n")
+
+print("Obrigado, tenha um bom dia :)")
