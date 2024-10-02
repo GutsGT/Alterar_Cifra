@@ -1,0 +1,65 @@
+(?!( ))                                   //Pode ter espaços antes do acorde
++[A-G]  
++(  
+  (  
+    m|#|b|°|(                              //Alterações padrão, menor, sustenido, bemol, diminuto
+      (((Maj)?)+\d+((M|\+)?))|\+|aug)      //Acorde com intervalo maior como "C7M", "CMaj7", "C+", "Caug"
+      |(-)                                 //Acorde com intervalo menor como "C-", "C-7"
+      |(add)                               //Acorde Com notas de tensão adicionadas como "Cadd9"
+      |(dim)                               //Acorde diminuto como "C5dim"
+      |\(|\)|\/                            //Parenteses ou barra
+    )*3?  
+  )  
++((\/+[A-G]+(b|#)?)?)                      //Baixo invertido
++( )*?\n                                   //Pode ter espaços entre o último acorde e a quebra de linha
+
+
+
+(?!( ))+[A-G]+((m|#|b|°|((((Maj)?)+\d+((M|\+)?))|\+|aug)|(-)|(add)|(dim)|\(|\)|\/)*3?)+((\/+[A-G]+(b|#)?)?)+( )*?\n
+
+
+
+
+Linhas para testar:
+A C
+
+A Cm
+A C#
+A Cb
+A C°
+
+A C7M
+A C7+
+A CMaj7
+A C(#5)
+A C+
+A Caug
+
+A C4
+A C5
+A C4(7/9)
+A C7(9)
+A C7(9)    
+
+A C-
+A C-7
+A Cm7
+
+A Cadd
+A Cadd9
+
+A Cm(b6)
+
+A F7M/A
+
+A Cm7(b5)
+
+A C5dim
+
+A C/G
+A c
+A Ai
+A NASA
+
+
+A C
