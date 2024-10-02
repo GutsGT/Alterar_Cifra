@@ -49,13 +49,10 @@ while(True):
 	def encontrarIdNota(tom):
 		idTom = -1
 
-		if(tom.find("M") == -1):
-			# Tom maior
-			tipoEscala = "maiores"
-		else:
-			# Tom menor
+		if(tom.find("m") > 0):
 			tipoEscala = "menores"
-			tom = tom.replace("M", "m")
+		else:
+			tipoEscala = "maiores"
 		
 		for f in range(0, len(escala[tipoEscala])):
 			for f2 in range(0, len(escala[tipoEscala][f])):
@@ -77,9 +74,12 @@ while(True):
 		while((linhas[f][-1:] == " " or linhas[f][-1:] == "\n") and len(linhas[f]) > 0):
 			linhas[f] = linhas[f][0:-1]
 
+
 		if(linhas[f].find("Tom:") != -1):
 			tomAtual = linhas[f][linhas[f].find("Tom:")+4:len(linhas[f])]
+			
 			tomAtual = tomAtual.replace(" ", "")
+			print(tomAtual)
 
 			idTomAtual = encontrarIdNota(tomAtual)
 			if(idTomAtual == -1):
@@ -90,7 +90,7 @@ while(True):
 	while(idProxTom == -1):
 		print("O tom atual é: "+tomAtual)
 		proxTom = input("Para qual tom deseja converter? ")
-		proxTom = proxTom.upper()
+		# proxTom = proxTom.upper()
 
 		idProxTom = encontrarIdNota(proxTom)
 
@@ -106,7 +106,9 @@ while(True):
 			continue
 		
 		# Reconhecer se a linha atual é de cifra ou letra
-		pattern = "([A-G]+([^( ,a-zá-ù)]|[#mb]+( *(^[a-z]|[A-Z]|[2-9]|\n)))|( [A-G] )|([A-G]\s*\n))";
+		# pattern = "([A-G]+([^( ,a-zá-ù)]|[#mb]+( *(^[a-z]|[A-Z]|[2-9]|\n)))|( [A-G] )|([A-G]\s*\n))"
+		# pattern = "/([A-G]+([#|m|b|°|\d]?)+(\)|M)?)*\n/g"
+		pattern = "(?!( ))+[A-G]+((m|#|b|°|((((Maj)?)+\d+((M|\+)?))|\+|aug)|(-)|(add)|(dim)|\(|\)|\/)*3?)+((\/+[A-G]+(b|#)?)?)+( )*?\n"
 		linhaCifra = (re.search(pattern, linhas[f]) != None)
 		
 		
